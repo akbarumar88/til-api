@@ -20,8 +20,16 @@ app.listen(PORT, () => {
 })
 
 app.get("/all", async (req, res, next) => {
+  let { tgl } = req.query
+
+  if (empty(tgl)) {
+    tgl = moment().format("YYYY-MM-DD")
+  }
+
   try {
-    let data = await db.query("SELECT * FROM kata_arti")
+    let data = await db.query(
+      `SELECT * FROM kata_arti WHERE tgl BETWEEN '${tgl} 00:00:00' AND '${tgl} 23:59:59'`
+    )
     res.json({
       data,
     })
